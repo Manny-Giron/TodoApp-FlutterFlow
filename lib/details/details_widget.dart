@@ -36,6 +36,8 @@ class _DetailsWidgetState extends State<DetailsWidget> {
     _model.taskDetailsTextController ??=
         TextEditingController(text: widget.taskDoc?.details);
     _model.taskDetailsFocusNode ??= FocusNode();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -62,6 +64,7 @@ class _DetailsWidgetState extends State<DetailsWidget> {
             child: Padding(
               padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
               child: Container(
+                width: 400.0,
                 decoration: BoxDecoration(
                   color: FlutterFlowTheme.of(context).secondaryBackground,
                   borderRadius: BorderRadius.circular(24.0),
