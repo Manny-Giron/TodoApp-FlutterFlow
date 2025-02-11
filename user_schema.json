@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "User Schema",
+  "description": "A JSON Schema for a user document in the Firestore ToDo app.",
+  "type": "object",
+  "properties": {
+    "birthday": {
+      "description": "The user's birthday timestamp.",
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_time": {
+      "description": "The timestamp when the user document was created.",
+      "type": "string",
+      "format": "date-time"
+    },
+    "display_name": {
+      "description": "The display name of the user.",
+      "type": "string"
+    },
+    "email": {
+      "description": "The email address of the user.",
+      "type": "string",
+      "format": "email"
+    },
+    "hometown": {
+      "description": "The hometown of the user.",
+      "type": "string"
+    },
+    "photo_url": {
+      "description": "A URL pointing to the user’s photo.",
+      "type": "string",
+      "format": "uri"
+    },
+    "uid": {
+      "description": "The unique user ID.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "birthday",
+    "created_time",
+    "display_name",
+    "email",
+    "hometown",
+    "photo_url",
+    "uid"
+  ],
+  "additionalProperties": false
+}
