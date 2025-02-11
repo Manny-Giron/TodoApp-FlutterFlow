@@ -30,6 +30,9 @@ class _OnboardingWidgetState extends State<OnboardingWidget> {
 
     _model.nameTextController ??= TextEditingController();
     _model.nameFocusNode ??= FocusNode();
+
+    _model.usernameTextController ??= TextEditingController();
+    _model.usernameFocusNode ??= FocusNode();
   }
 
   @override
@@ -356,6 +359,100 @@ class _OnboardingWidgetState extends State<OnboardingWidget> {
                           ),
                         ),
                       ),
+                      Padding(
+                        padding: const EdgeInsetsDirectional.fromSTEB(
+                            18.0, 0.0, 18.0, 0.0),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: TextFormField(
+                            controller: _model.usernameTextController,
+                            focusNode: _model.usernameFocusNode,
+                            onChanged: (_) => EasyDebounce.debounce(
+                              '_model.usernameTextController',
+                              const Duration(milliseconds: 2000),
+                              () => safeSetState(() {}),
+                            ),
+                            autofocus: false,
+                            textCapitalization: TextCapitalization.words,
+                            textInputAction: TextInputAction.done,
+                            obscureText: false,
+                            decoration: InputDecoration(
+                              isDense: true,
+                              labelStyle: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .override(
+                                    fontFamily: 'Inter',
+                                    letterSpacing: 0.0,
+                                  ),
+                              hintText: 'Hometown...',
+                              hintStyle: FlutterFlowTheme.of(context)
+                                  .labelLarge
+                                  .override(
+                                    fontFamily: 'Inter',
+                                    letterSpacing: 0.0,
+                                  ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color:
+                                      FlutterFlowTheme.of(context).primaryText,
+                                  width: 1.0,
+                                ),
+                                borderRadius: BorderRadius.circular(24.0),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: FlutterFlowTheme.of(context).primary,
+                                  width: 1.0,
+                                ),
+                                borderRadius: BorderRadius.circular(24.0),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: FlutterFlowTheme.of(context).error,
+                                  width: 1.0,
+                                ),
+                                borderRadius: BorderRadius.circular(24.0),
+                              ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: FlutterFlowTheme.of(context).error,
+                                  width: 1.0,
+                                ),
+                                borderRadius: BorderRadius.circular(24.0),
+                              ),
+                              filled: true,
+                              fillColor: FlutterFlowTheme.of(context)
+                                  .secondaryBackground,
+                              contentPadding: const EdgeInsetsDirectional.fromSTEB(
+                                  24.0, 26.0, 24.0, 26.0),
+                              suffixIcon: _model
+                                      .usernameTextController!.text.isNotEmpty
+                                  ? InkWell(
+                                      onTap: () async {
+                                        _model.usernameTextController?.clear();
+                                        safeSetState(() {});
+                                      },
+                                      child: const Icon(
+                                        Icons.clear,
+                                        size: 22,
+                                      ),
+                                    )
+                                  : null,
+                            ),
+                            style: FlutterFlowTheme.of(context)
+                                .bodyMedium
+                                .override(
+                                  fontFamily: 'Inter',
+                                  fontSize: 18.0,
+                                  letterSpacing: 0.0,
+                                ),
+                            cursorColor:
+                                FlutterFlowTheme.of(context).primaryText,
+                            validator: _model.usernameTextControllerValidator
+                                .asValidator(context),
+                          ),
+                        ),
+                      ),
                     ].divide(const SizedBox(height: 24.0)),
                   ),
                 ),
@@ -367,6 +464,8 @@ class _OnboardingWidgetState extends State<OnboardingWidget> {
                     await currentUserReference!.update(createUsersRecordData(
                       displayName: _model.nameTextController.text,
                       birthday: _model.datePicked,
+                      hometown:
+                          valueOrDefault(currentUserDocument?.hometown, ''),
                     ));
 
                     context.goNamed('tasks');
