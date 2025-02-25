@@ -1,15 +1,23 @@
 import '/auth/firebase_auth/auth_util.dart';
+import '/backend/api_requests/api_calls.dart';
 import '/backend/backend.dart';
 import '/components/add_task_widget.dart';
 import '/components/task_widget.dart';
+import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
+import '/index.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:provider/provider.dart';
 import 'tasks_model.dart';
 export 'tasks_model.dart';
 
 class TasksWidget extends StatefulWidget {
   const TasksWidget({super.key});
+
+  static String routeName = 'tasks';
+  static String routePath = '/tasks';
 
   @override
   State<TasksWidget> createState() => _TasksWidgetState();
@@ -25,6 +33,18 @@ class _TasksWidgetState extends State<TasksWidget> {
     super.initState();
     _model = createModel(context, () => TasksModel());
 
+    // On page load action.
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      _model.apiResult3wv = await GenerateInspirationQuoteCall.call();
+
+      if ((_model.apiResult3wv?.succeeded ?? true)) {
+        FFAppState().currentQuote = GenerateInspirationQuoteCall.quote(
+          (_model.apiResult3wv?.jsonBody ?? ''),
+        )!;
+        safeSetState(() {});
+      }
+    });
+
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
@@ -37,6 +57,8 @@ class _TasksWidgetState extends State<TasksWidget> {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<FFAppState>();
+
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -80,7 +102,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                       },
                       child: Padding(
                         padding: MediaQuery.viewInsetsOf(context),
-                        child: const AddTaskWidget(),
+                        child: AddTaskWidget(),
                       ),
                     );
                   },
@@ -95,30 +117,56 @@ class _TasksWidgetState extends State<TasksWidget> {
           ),
         ),
         body: Align(
-          alignment: const AlignmentDirectional(0.0, 0.0),
+          alignment: AlignmentDirectional(0.0, 0.0),
           child: Container(
             width: 400.0,
-            decoration: const BoxDecoration(),
+            decoration: BoxDecoration(),
             child: Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(0.0, 24.0, 0.0, 24.0),
+              padding: EdgeInsetsDirectional.fromSTEB(0.0, 24.0, 0.0, 24.0),
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Align(
-                    alignment: const AlignmentDirectional(-1.0, 0.0),
-                    child: Padding(
-                      padding:
-                          const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 0.0, 10.0),
-                      child: Text(
-                        'Tasks',
-                        style: FlutterFlowTheme.of(context)
-                            .headlineMedium
-                            .override(
-                              fontFamily: 'Inter',
-                              letterSpacing: 0.0,
+                    alignment: AlignmentDirectional(0.0, 0.0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Align(
+                          alignment: AlignmentDirectional(-1.0, 0.0),
+                          child: Padding(
+                            padding: EdgeInsetsDirectional.fromSTEB(
+                                24.0, 0.0, 0.0, 10.0),
+                            child: Text(
+                              'Tasks',
+                              style: FlutterFlowTheme.of(context)
+                                  .headlineMedium
+                                  .override(
+                                    fontFamily: 'Inter',
+                                    letterSpacing: 0.0,
+                                  ),
                             ),
-                      ),
+                          ),
+                        ),
+                        FlutterFlowIconButton(
+                          borderRadius: 20.0,
+                          buttonSize: 40.0,
+                          icon: Icon(
+                            Icons.exit_to_app,
+                            color: FlutterFlowTheme.of(context).primaryText,
+                            size: 24.0,
+                          ),
+                          onPressed: () async {
+                            GoRouter.of(context).prepareAuthEvent();
+                            await authManager.signOut();
+                            GoRouter.of(context).clearRedirectLocation();
+
+                            context.goNamedAuth(
+                                LoginWidget.routeName, context.mounted);
+                          },
+                        ),
+                      ],
                     ),
                   ),
                   Expanded(
@@ -156,7 +204,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                           padding: EdgeInsets.zero,
                           scrollDirection: Axis.vertical,
                           itemCount: listViewTasksRecordList.length,
-                          separatorBuilder: (_, __) => const SizedBox(height: 8.0),
+                          separatorBuilder: (_, __) => SizedBox(height: 8.0),
                           itemBuilder: (context, listViewIndex) {
                             final listViewTasksRecord =
                                 listViewTasksRecordList[listViewIndex];
@@ -167,7 +215,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                               highlightColor: Colors.transparent,
                               onTap: () async {
                                 context.pushNamed(
-                                  'details',
+                                  DetailsWidget.routeName,
                                   queryParameters: {
                                     'taskDoc': serializeParam(
                                       listViewTasksRecord,
@@ -196,7 +244,39 @@ class _TasksWidgetState extends State<TasksWidget> {
                       },
                     ),
                   ),
-                ].divide(const SizedBox(height: 1.0)),
+                  Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Text(
+                        'Inspirational Quote:',
+                        style: FlutterFlowTheme.of(context).bodyMedium.override(
+                              fontFamily: 'Inter',
+                              letterSpacing: 0.0,
+                              decoration: TextDecoration.underline,
+                            ),
+                      ),
+                      Align(
+                        alignment: AlignmentDirectional(0.0, 0.0),
+                        child: Container(
+                          constraints: BoxConstraints(
+                            maxWidth: 300.0,
+                          ),
+                          decoration: BoxDecoration(),
+                          child: Text(
+                            FFAppState().currentQuote,
+                            style: FlutterFlowTheme.of(context)
+                                .labelSmall
+                                .override(
+                                  fontFamily: 'Inter',
+                                  letterSpacing: 0.0,
+                                  fontStyle: FontStyle.italic,
+                                ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ].divide(SizedBox(height: 1.0)),
               ),
             ),
           ),

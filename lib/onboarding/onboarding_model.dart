@@ -1,4 +1,5 @@
 import '/flutter_flow/flutter_flow_util.dart';
+import '/index.dart';
 import 'onboarding_widget.dart' show OnboardingWidget;
 import 'package:flutter/material.dart';
 
@@ -15,10 +16,10 @@ class OnboardingModel extends FlutterFlowModel<OnboardingWidget> {
   TextEditingController? nameTextController;
   String? Function(BuildContext, String?)? nameTextControllerValidator;
   DateTime? datePicked;
-  // State field(s) for username widget.
-  FocusNode? usernameFocusNode;
-  TextEditingController? usernameTextController;
-  String? Function(BuildContext, String?)? usernameTextControllerValidator;
+  // State field(s) for homeTown widget.
+  FocusNode? homeTownFocusNode;
+  TextEditingController? homeTownTextController;
+  String? Function(BuildContext, String?)? homeTownTextControllerValidator;
 
   @override
   void initState(BuildContext context) {}
@@ -28,7 +29,7 @@ class OnboardingModel extends FlutterFlowModel<OnboardingWidget> {
     nameFocusNode?.dispose();
     nameTextController?.dispose();
 
-    usernameFocusNode?.dispose();
-    usernameTextController?.dispose();
+    homeTownFocusNode?.dispose();
+    homeTownTextController?.dispose();
   }
 }
